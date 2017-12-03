@@ -12,9 +12,30 @@
     //lets you register a listener
     io.on('connection', (socket) => {
       console.log('new user connected');
+      //emit is creating an event
+      socket.emit('newEmail', {
+        from: "Drew@me.com",
+        text: "Hello there Quin",
+        date: 12/3/17
+      });
+
+      socket.emit('newMessage', {
+        from: "Sam",
+        text: "Hello there Quin",
+        date: new Date().toString()
+      });
+
+      socket.on('createEmail', (data) => {
+        console.log('createEmail', data);
+      })
+
+      socket.on('createMessage', (message) => {
+        console.log('createMessage', message);
+      })
+
       socket.on('disconnect', () => {
         console.log('Client disconnected');
-      })
+      });
     });
 
 
