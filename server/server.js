@@ -4,6 +4,7 @@ const http = require('http');
 const express = require('express');
 const socketIO = require('socket.io');
 const publicPath = path.join(__dirname, '../public');
+const { generateMessage } = require('./utils/message');
 
 const port = process.env.PORT || 3000;
 var app = express();
@@ -13,20 +14,23 @@ var io = socketIO(server);
 //lets you register a listener
 io.on('connection', socket => {
   console.log('new user connected');
-  //emit is creating an event
-  socket.emit('newEmail', {
-    from: 'Drew@me.com',
-    text: 'Hello there Quin',
-    date: new Date().toString()
-  });
 
-  socket.on('createMessage', ({ from, text }) => {
+  // welcome the user that just connected
+  socket.emit('newMessage', generateMessage('Admin', 'welcome new user'));
+
+  // Let all users know that a new user joined
+  // broadcast makes sure that everyone but the sender
+  // gets the message
+  socket.broadcast.emit(
+    'newMessage',
+    generateMessage('Admin', 'new user has koined')
+  );
+
+  socket.on('createMessage', ({ from, text }, callback) => {
+    console.log('Create Message was called');
     // io.emit emits a message to every connection
-    io.emit('newMessage', {
-      from,
-      text,
-      createdAt: new Date().getTime()
-    });
+    io.emit('newMessage', generateMessage(from, text));
+    callback('This is from the server');
   });
 
   socket.on('disconnect', () => {

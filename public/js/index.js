@@ -8,8 +8,24 @@ socket.on('disconnect', function() {
 });
 
 socket.on('newMessage', function(message) {
-  document.getElementById('app').innerHTML = message.from;
+  var li = $('<li></li>');
+  li.text(`${message.from}: ${message.text}`);
+  $('#messages').append(li);
   console.log('New Message', message);
 });
 
-socket.on('');
+$('#message-form').submit(function(ev) {
+  ev.preventDefault();
+  var text = $('#message').val();
+  socket.emit(
+    'createMessage',
+    {
+      from: 'Quin',
+      text
+    },
+    function(message) {
+      $('#message').val('');
+      console.log(message);
+    }
+  );
+});
