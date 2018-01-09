@@ -8,16 +8,18 @@ socket.on('disconnect', function() {
 });
 
 socket.on('newMessage', function(message) {
+  const formattedTime = moment(message.createdAt).format('h:mm a');
   var li = $('<li></li>');
-  li.text(`${message.from}: ${message.text}`);
+  li.text(`${message.from} ${formattedTime}: ${message.text}`);
   $('#messages').append(li);
   console.log('New Message', message);
 });
 
 socket.on('newLocationMessage', function(message) {
+  const formattedTime = moment(message.createdAt).format('h:mm a');
   var li = $('<li></li>');
   var a = $('<a target="_blank">My Current Location</a>');
-  li.text(`${message.from}: `);
+  li.text(`${message.from} ${formattedTime}: `);
   a.attr('href', message.url);
   li.append(a);
   $('#messages').append(li);
@@ -34,7 +36,6 @@ $('#message-form').submit(function(ev) {
     },
     function(message) {
       $('#message').val('');
-      console.log(message);
     }
   );
 });
@@ -45,6 +46,7 @@ locationButton.on('click', function() {
   if (!navigator.geolocation) {
     return alert('Geoloaction not supported by your browser');
   }
+  locationButton.attr('disabled', 'disabled').text('Sending Location');
 
   var location = navigator.geolocation.getCurrentPosition(
     function(position) {
@@ -52,9 +54,10 @@ locationButton.on('click', function() {
         latitude: position.coords.latitude,
         longitude: position.coords.longitude
       });
-      return position;
+      locationButton.removeAttr('disabled').text('Send Location');
     },
     function() {
+      locationButton.removeAttr('disabled').text('Send Location');
       alert('Unable to fetch location');
     }
   );
