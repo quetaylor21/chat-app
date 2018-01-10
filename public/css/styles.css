@@ -193,9 +193,12 @@ button:disabled {
 .message__title h4 {
   font-weight: 600;
   margin-right: 10px;
+  color: #296682;
+  font-size: 1.5rem;
 }
 .message__title span {
   color: #999;
+  margin-top: 6px;
 }
 @media (max-width: 600px) {
   * {
