@@ -18,6 +18,7 @@ var users = new Users();
 io.on('connection', socket => {
 
   socket.on('join', ({name, room}, callback) => {
+    room = room.toLowerCase()
     if(!isRealString(name) || !isRealString(room)){
       return callback('Name and room name are required')
     }
